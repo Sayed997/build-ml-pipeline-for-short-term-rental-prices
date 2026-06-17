@@ -31,6 +31,14 @@ def go(args):
 
     # Read test dataset
     X_test = pd.read_csv(test_dataset_path)
+
+    #FIX: Force text/categorical columns to string/object type
+    string_cols = ["neighbourhood_group", "room_type", "last_review", "name"]
+    for col in string_cols:
+        if col in X_test.columns:
+            # Convert to string first (forces object block), then map string 'nan' back to real NaN
+            X_test[col] = X_test[col].astype(str).replace("nan", float("nan"))
+
     y_test = X_test.pop("price")
 
     logger.info("Loading model and performing inference on test set")
